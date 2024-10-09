@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { CheckBox } from 'react-native-elements'; 
 
 const PatientInfoScreen = () => {
   const [sex, setSex] = useState('');
