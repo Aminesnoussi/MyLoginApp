@@ -1,11 +1,12 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native'; // Importation de la navigation
-import { createNativeStackNavigator } from '@react-navigation/native-stack'; // Importation du stack
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import LoginScreen from './screens/LoginScreen'; // Vérifie que le chemin est correct
-import HomeScreen from './screens/HomeScreen'; // Vérifie que le chemin est correct
+import LoginScreen from './screens/LoginScreen'; 
+import HomeScreen from './screens/HomeScreen'; 
+import PatientInfoScreen from './screens/PatientInfoScreen'; 
 
-const Stack = createNativeStackNavigator(); // Création du stack
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="PatientInfo" component={PatientInfoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
