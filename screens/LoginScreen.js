@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Modal } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleLogin = () => {
     navigation.replace('Home'); // Rediriger vers la page Home
@@ -11,10 +12,35 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://www.yellowe.fr/wp-content/uploads/2021/07/iStock-1210162966.jpg' }} // Nouvelle image de fond en rapport avec la santé
+      source={{ uri: 'https://www.yellowe.fr/wp-content/uploads/2021/07/iStock-1210162966.jpg' }}
       style={styles.background}
     >
       <View style={styles.overlay} />
+      <TouchableOpacity style={styles.menuButton} onPress={() => setModalVisible(true)}>
+        <Text style={styles.menuButtonText}>☰ Menu</Text>
+      </TouchableOpacity>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalTitle}>Menu</Text>
+          <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalItem}>
+            <Text style={styles.modalItemText}>Option 1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalItem}>
+            <Text style={styles.modalItemText}>Option 2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalItem}>
+            <Text style={styles.modalItemText}>Option 3</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Fermer</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
       <View style={styles.container}>
         <Text style={styles.title}>Connectez-vous</Text>
         <Text style={styles.subtitle}>Accédez à vos informations de santé</Text>
@@ -51,6 +77,53 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.3)', // Overlay pour assombrir l'image
+  },
+  menuButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 25,
+    padding: 10,
+    elevation: 5,
+  },
+  menuButtonText: {
+    fontSize: 20,
+    color: '#007bff',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 24,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalItem: {
+    marginVertical: 10,
+  },
+  modalItemText: {
+    fontSize: 18,
+    color: '#007bff',
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: '#007bff',
+    borderRadius: 20,
+    padding: 10,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 18,
   },
   container: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)', // Arrière-plan clair
