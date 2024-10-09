@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native';
 
-const LoginScreen = ({ navigation }) => {
+const SignupScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    navigation.replace('Home'); // Rediriger vers la page Home
+  const handleSignup = () => {
+    // Logique d'inscription ici (ex : appel à une API)
+    Alert.alert('Inscription réussie', 'Vous êtes maintenant inscrit !', [
+      { text: 'OK', onPress: () => navigation.replace('Home') },
+    ]);
   };
 
   return (
     <ImageBackground
-      source={{ uri: 'https://www.yellowe.fr/wp-content/uploads/2021/07/iStock-1210162966.jpg' }} // Image de fond en rapport avec la santé
+      source={{ uri: 'https://www.yellowe.fr/wp-content/uploads/2021/07/iStock-1210162966.jpg' }} // Image de fond
       style={styles.background}
     >
       <View style={styles.overlay} />
       <View style={styles.container}>
-        <Text style={styles.title}>Connectez-vous</Text>
-        <Text style={styles.subtitle}>Accédez à vos informations de santé</Text>
+        <Text style={styles.title}>Inscription</Text>
+        <Text style={styles.subtitle}>Créez votre compte pour accéder à vos informations de santé</Text>
         <TextInput
           style={styles.input}
           placeholder="Nom d'utilisateur"
@@ -27,17 +31,24 @@ const LoginScreen = ({ navigation }) => {
         />
         <TextInput
           style={styles.input}
+          placeholder="Adresse e-mail"
+          placeholderTextColor="#aaa"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          style={styles.input}
           placeholder="Mot de passe"
           placeholderTextColor="#aaa"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
         />
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Se connecter</Text>
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>S'inscrire</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-          <Text style={styles.footerText}>Pas encore inscrit ? Inscrivez-vous ici</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.footerText}>Déjà inscrit ? Connectez-vous ici</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -111,11 +122,11 @@ const styles = StyleSheet.create({
   },
   footerText: {
     textAlign: 'center',
-    color: '#007bff', // Changement de la couleur en bleu clair
+    color: '#007bff',
     marginTop: 20,
     fontSize: 16,
     textDecorationLine: 'underline',
   },
 });
 
-export default LoginScreen;
+export default SignupScreen;
