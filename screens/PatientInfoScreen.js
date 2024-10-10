@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Picker } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements'; 
-import { Picker } from '@react-native-picker/picker'; // Importation du Picker
+import { Picker } from '@react-native-picker/picker'; // Conservez cette importation
 
 const CRITICAL_HEART_RATE = 100;
 const CRITICAL_OXYGEN_LEVEL = 90;

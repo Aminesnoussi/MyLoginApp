@@ -4,7 +4,7 @@ import { auth } from './firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth'; // Importer la fonction d'authentification
 
 const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('test@gmail.com');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
