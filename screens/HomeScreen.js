@@ -81,7 +81,7 @@ const HomeScreen = ({ navigation }) => {
           title="Accéder aux Infos Patients"
           onPress={() => navigation.navigate('PatientInfo')}
           disabled={!accepted}
-          color={accepted ? "#28a745" : "#ccc"}
+          color={accepted ? "#007BFF" : "#ccc"}
         />
       </ScrollView>
     </ImageBackground>

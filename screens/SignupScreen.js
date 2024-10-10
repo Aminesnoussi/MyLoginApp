@@ -1,22 +1,42 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ImageBackground, Alert } from 'react-native';
+import { auth } from './firebaseConfig'; 
+import { createUserWithEmailAndPassword } from "firebase/auth"; 
+import { TouchableOpacity } from 'react-native';
+import { collection, addDoc } from "firebase/firestore"; // Importez ces 
 
 const SignupScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignup = () => {
-    // Logique d'inscription ici (ex : appel à une API)
-    Alert.alert('Inscription réussie', 'Vous êtes maintenant inscrit !', [
-      { text: 'OK', onPress: () => navigation.replace('Home') },
-    ]);
+  const handleSignup = async () => {
+    try {
+      setIsLoading(true);
+      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredentials.user;
+      console.log('Registered with:', user.email);
+  
+      // Ajouter des informations supplémentaires à Firestore
+      await addDoc(collection(firestore, "users"), {
+        username: username,
+        email: user.email,
+      });
+  
+      navigation.navigate('Home'); // Rediriger vers l'écran Home après l'inscription
+    } catch (error) {
+      Alert.alert("Erreur d'inscription", error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
-
+  
   return (
     <ImageBackground
-      source={{ uri: 'https://www.yellowe.fr/wp-content/uploads/2021/07/iStock-1210162966.jpg' }} // Image de fond
+      source={{ uri: 'https://www.yellowe.fr/wp-content/uploads/2021/07/iStock-1210162966.jpg' }}
       style={styles.background}
+      resizeMode="cover"
     >
       <View style={styles.overlay} />
       <View style={styles.container}>
@@ -44,8 +64,12 @@ const SignupScreen = ({ navigation }) => {
           onChangeText={setPassword}
           secureTextEntry
         />
-        <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>S'inscrire</Text>
+        <TouchableOpacity 
+          style={[styles.button, isLoading && styles.buttonDisabled]} 
+          onPress={handleSignup} 
+          disabled={isLoading}
+        >
+          <Text style={styles.buttonText}>{isLoading ? 'Chargement...' : "S'inscrire"}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.footerText}>Déjà inscrit ? Connectez-vous ici</Text>
@@ -62,70 +86,56 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Overlay pour assombrir l'image
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Overlay pour assombrir l'image
   },
   container: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Arrière-plan clair
-    padding: 30,
-    borderRadius: 15,
-    width: '85%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 8,
+    width: '80%',
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+    zIndex: 1,
   },
   title: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#2d2d2d', // Couleur sombre pour le texte
-    textAlign: 'center',
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 18,
-    color: '#4a4a4a', // Couleur pour le sous-titre
-    textAlign: 'center',
-    marginBottom: 25,
+    fontSize: 16,
+    marginBottom: 20,
   },
   input: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 15,
-    marginVertical: 10,
-    fontSize: 16,
+    width: '100%',
+    padding: 10,
     borderWidth: 1,
-    borderColor: '#d1d1d1',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 10,
   },
   button: {
-    backgroundColor: '#007bff', // Couleur bleue pour le bouton
-    paddingVertical: 15,
-    borderRadius: 30,
-    marginTop: 20,
-    shadowColor: '#007bff',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 10,
+    width: '100%',
+    padding: 15,
+    backgroundColor: '#0782F9',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonDisabled: {
+    backgroundColor: '#A0A0A0', // Couleur pour le bouton désactivé
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 16,
   },
   footerText: {
-    textAlign: 'center',
-    color: '#007bff',
-    marginTop: 20,
-    fontSize: 16,
-    textDecorationLine: 'underline',
+    marginTop: 10,
+    color: '#0782F9',
   },
 });
 

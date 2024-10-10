@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Picker } from 'react-native';
 import { CheckBox } from 'react-native-elements'; 
 
 // Seuils critiques pour l'analyse
@@ -10,7 +10,7 @@ const ELDERLY_AGE_THRESHOLD = 65;
 
 const PatientInfoScreen = () => {
   // État des informations du patient
-  const [sex, setSex] = useState('');
+  const [sex, setSex] = useState('Homme');
   const [age, setAge] = useState('');
   const [cholesterol, setCholesterol] = useState('');
   const [contribution, setContribution] = useState('');
@@ -68,21 +68,33 @@ const PatientInfoScreen = () => {
     Alert.alert("Urgence!", "Appeler les secours immédiatement !");
   };
 
+  // Fonction pour gérer la saisie d'âge
+  const handleAgeChange = (text) => {
+    // Permettre uniquement la saisie de chiffres
+    const numbersOnly = text.replace(/[^0-9]/g, '');
+    setAge(numbersOnly);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Informations sur le Patient</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Sexe"
-        value={sex}
-        onChangeText={setSex}
-      />
+      <View style={styles.pickerContainer}>
+        <Text style={styles.label}>Sexe :</Text>
+        <Picker
+          selectedValue={sex}
+          style={styles.picker}
+          onValueChange={(itemValue) => setSex(itemValue)}>
+          <Picker.Item label="Homme" value="Homme" />
+          <Picker.Item label="Femme" value="Femme" />
+        </Picker>
+      </View>
+
       <TextInput
         style={styles.input}
         placeholder="Âge"
         value={age}
-        onChangeText={setAge}
+        onChangeText={handleAgeChange} // Utiliser la fonction de gestion de l'âge
         keyboardType="numeric"
       />
       <TextInput
@@ -100,7 +112,7 @@ const PatientInfoScreen = () => {
       />
 
       <View style={styles.checkboxContainer}>
-        <Text style={styles.checkboxLabel}>Diabète:</Text>
+        <Text style={styles.checkboxLabel}>Diabète :</Text>
         <CheckBox
           checked={diabetes}
           onPress={() => setDiabetes(!diabetes)}
@@ -108,7 +120,7 @@ const PatientInfoScreen = () => {
       </View>
 
       <View style={styles.checkboxContainer}>
-        <Text style={styles.checkboxLabel}>Hypertension:</Text>
+        <Text style={styles.checkboxLabel}>Hypertension :</Text>
         <CheckBox
           checked={hypertension}
           onPress={() => setHypertension(!hypertension)}
@@ -116,7 +128,7 @@ const PatientInfoScreen = () => {
       </View>
 
       {/* Bouton d'Analyse */}
-      <Button title="Analyser" onPress={handleAnalysis} />
+      <Button title="Analyser" onPress={handleAnalysis} color="#007BFF" />
 
       {/* Affichage des données de la montre si l'analyse a été effectuée */}
       {watchData && (
@@ -140,28 +152,69 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#F5F5F5', // Fond clair
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
+    paddingTop: 0, 
     textAlign: 'center',
+    color: '#333', // Couleur du texte
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#333',
+  },
+  pickerContainer: {
+    marginBottom: 10,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    borderColor: '#999',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#FFF',
+    borderColor: '#007BFF',
+    
+
+    
   },
   input: {
     borderWidth: 1,
-    padding: 10,
-    marginVertical: 10,
+    padding: 15,
+    marginVertical: 5, // Ajustement de l'espacement vertical
     borderRadius: 5,
+    backgroundColor: '#FFF',
+    borderColor: '#007BFF',
+    fontSize: 16, // Augmenter la taille de la police
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2, // Ombre pour Android
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 5, // Ajustement de l'espacement vertical
   },
   checkboxLabel: {
     marginLeft: 8,
+    color: '#333',
   },
   resultContainer: {
-    marginTop: 20,
+    marginTop: 20  ,
+    marginBottom: 20  ,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#007BFF',
+    borderRadius: 5,
+    backgroundColor: '#E0F7FA', // Fond léger pour les résultats
   },
 });
 

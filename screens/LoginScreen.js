@@ -1,12 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Alert } from 'react-native';
+import { auth } from './firebaseConfig'; 
+import { signInWithEmailAndPassword } from 'firebase/auth'; // Importer la fonction d'authentification
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    navigation.replace('Home'); // Rediriger vers la page Home
+  const handleLogin = async () => {
+    try {
+      console.log('Tentative de connexion avec', username);
+      await signInWithEmailAndPassword(auth, username, password);
+      navigation.replace('Home');
+    } catch (error) {
+      // Vérifiez si l'erreur concerne l'authentification
+      if (error.code === 'auth/user-not-found') {
+        Alert.alert("Erreur de connexion", "Aucun utilisateur trouvé avec cet email.");
+      } else if (error.code === 'auth/wrong-password') {
+        Alert.alert("Erreur de connexion", "Mot de passe incorrect.");
+      } else {
+        Alert.alert("Erreur de connexion", error.message); // Message d'erreur par défaut
+      }
+    }
   };
 
   return (
@@ -20,7 +35,7 @@ const LoginScreen = ({ navigation }) => {
         <Text style={styles.subtitle}>Accédez à vos informations de santé</Text>
         <TextInput
           style={styles.input}
-          placeholder="Nom d'utilisateur"
+          placeholder="Email" // Changer le placeholder pour l'email
           placeholderTextColor="#aaa"
           value={username}
           onChangeText={setUsername}
@@ -39,6 +54,9 @@ const LoginScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
           <Text style={styles.footerText}>Pas encore inscrit ? Inscrivez-vous ici</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+          <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
+        </TouchableOpacity>
       </View>
     </ImageBackground>
   );
@@ -51,70 +69,58 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Overlay pour assombrir l'image
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Overlay pour assombrir l'image
   },
   container: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Arrière-plan clair
-    padding: 30,
-    borderRadius: 15,
-    width: '85%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 8,
+    width: '80%',
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+    zIndex: 1,
   },
   title: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#2d2d2d', // Couleur sombre pour le texte
-    textAlign: 'center',
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 18,
-    color: '#4a4a4a', // Couleur pour le sous-titre
-    textAlign: 'center',
-    marginBottom: 25,
+    fontSize: 16,
+    marginBottom: 20,
   },
   input: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 15,
-    marginVertical: 10,
-    fontSize: 16,
+    width: '100%',
+    padding: 10,
     borderWidth: 1,
-    borderColor: '#d1d1d1',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 10,
   },
   button: {
-    backgroundColor: '#007bff', // Couleur bleue pour le bouton
-    paddingVertical: 15,
-    borderRadius: 30,
-    marginTop: 20,
-    shadowColor: '#007bff',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 10,
+    width: '100%',
+    padding: 15,
+    backgroundColor: '#0782F9',
+    borderRadius: 5,
+    alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 16,
   },
   footerText: {
-    textAlign: 'center',
-    color: '#007bff', // Changement de la couleur en bleu clair
-    marginTop: 20,
-    fontSize: 16,
-    textDecorationLine: 'underline',
+    marginTop: 10,
+    color: '#0782F9',
+  },
+  forgotPasswordText: {
+    marginTop: 10,
+    color: '#0782F9',
+    textDecorationLine: 'underline', // Souligner le texte
   },
 });
 
