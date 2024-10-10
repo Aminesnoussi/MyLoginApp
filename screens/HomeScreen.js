@@ -38,48 +38,47 @@ const HomeScreen = ({ navigation }) => {
           </TouchableOpacity>
 
           <Modal
-  animationType="slide"
-  transparent={true}
-  visible={modalVisible}
-  onRequestClose={() => {
-    setModalVisible(!modalVisible);
-  }}
->
-  <View style={styles.modalView}>
-    <Text style={styles.termsTitle}>Conditions d'utilisation</Text>
-    <Text style={styles.terms}>
-      Avant d'utiliser le contrôle, veuillez lire attentivement les conditions de service suivantes :
-    </Text>
-    
-    <View style={styles.termsListContainer}>
-      <Text style={styles.termsList}>✅ Checkup n'est pas un diagnostic. C'est uniquement pour votre information et ne doit pas être considéré comme un avis médical qualifié.</Text>
-      <Text style={styles.termsList}>✅ Checkup n'est pas destiné aux urgences. En cas d'urgence sanitaire, veuillez appeler immédiatement votre numéro d'urgence local.</Text>
-      <Text style={styles.termsList}>✅ Vos données sont en sécurité. Les informations que vous fournissez ne seront jamais partagées ou utilisées pour vous identifier.</Text>
-    </View>
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.modalView}>
+              <Text style={styles.termsTitle}>Conditions d'utilisation</Text>
+              <Text style={styles.terms}>
+                Avant d'utiliser le contrôle, veuillez lire attentivement les conditions de service suivantes :
+              </Text>
+              
+              <View style={styles.termsListContainer}>
+                <Text style={styles.termsList}>✅ Checkup n'est pas un diagnostic. C'est uniquement pour votre information et ne doit pas être considéré comme un avis médical qualifié.</Text>
+                <Text style={styles.termsList}>✅ Checkup n'est pas destiné aux urgences. En cas d'urgence sanitaire, veuillez appeler immédiatement votre numéro d'urgence local.</Text>
+                <Text style={styles.termsList}>✅ Vos données sont en sécurité. Les informations que vous fournissez ne seront jamais partagées ou utilisées pour vous identifier.</Text>
+              </View>
 
-    <TouchableOpacity
-      style={styles.acceptButton}
-      onPress={handleAccept}
-    >
-      <Text style={styles.acceptButtonText}>J'accepte</Text>
-    </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.acceptButton}
+                onPress={handleAccept}
+              >
+                <Text style={styles.acceptButtonText}>J'accepte</Text>
+              </TouchableOpacity>
 
-    <TouchableOpacity
-      style={styles.closeButton}
-      onPress={() => setModalVisible(false)}
-    >
-      <Text style={styles.closeButtonText}>Fermer</Text>
-    </TouchableOpacity>
-  </View>
-</Modal>
-
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.closeButtonText}>Fermer</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
 
           {accepted && <Text style={styles.acceptedText}>Merci d'avoir accepté les conditions.</Text>}
         </View>
 
         <Button
           title="Accéder aux Infos Patients"
-          onPress={() => navigation.navigate('PatientInfo')}
+          onPress={() => navigation.navigate('InfoSurPatient')}
           disabled={!accepted}
           color={accepted ? "#28a745" : "#ccc"}
         />

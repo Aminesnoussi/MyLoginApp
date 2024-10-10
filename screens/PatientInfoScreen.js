@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements'; 
+import { Picker } from '@react-native-picker/picker'; // Importation du Picker
 
-// Seuils critiques pour l'analyse
 const CRITICAL_HEART_RATE = 100;
 const CRITICAL_OXYGEN_LEVEL = 90;
 const HIGH_CHOLESTEROL_LEVEL = 240;
 const ELDERLY_AGE_THRESHOLD = 65;
 
 const PatientInfoScreen = () => {
-  // État des informations du patient
   const [sex, setSex] = useState('');
   const [age, setAge] = useState('');
   const [cholesterol, setCholesterol] = useState('');
@@ -19,32 +18,25 @@ const PatientInfoScreen = () => {
   const [watchData, setWatchData] = useState(null);
   const [isCritical, setIsCritical] = useState(false);
 
-  // Fonction d'analyse des données
   const handleAnalysis = () => {
-    // Simuler les données de la montre
     const fakeWatchData = {
-      heartRate: Math.floor(Math.random() * 120) + 60, // Fréquence cardiaque entre 60 et 180
-      oxygenLevel: Math.floor(Math.random() * 20) + 80, // Niveau d'oxygène entre 80% et 100%
+      heartRate: Math.floor(Math.random() * 120) + 60,
+      oxygenLevel: Math.floor(Math.random() * 20) + 80,
     };
 
     setWatchData(fakeWatchData);
-
-    // Initialiser la condition critique
     let criticalCondition = false;
 
-    // Vérifications basées sur l'âge
     if (age && parseInt(age) > ELDERLY_AGE_THRESHOLD) {
       criticalCondition = true;
       Alert.alert("Attention!", "Le patient a plus de 65 ans, vérifiez les conditions médicales.");
     }
 
-    // Vérifications sur le cholestérol
     if (cholesterol && parseInt(cholesterol) > HIGH_CHOLESTEROL_LEVEL) {
       criticalCondition = true;
       Alert.alert("Attention!", "Le niveau de cholestérol est élevé !");
     }
 
-    // Vérifications sur les données de la montre
     if (fakeWatchData.heartRate > CRITICAL_HEART_RATE) {
       criticalCondition = true;
       Alert.alert("Attention!", "Fréquence cardiaque critique détectée !");
@@ -54,7 +46,6 @@ const PatientInfoScreen = () => {
       Alert.alert("Attention!", "Niveau d'oxygène critique détecté !");
     }
 
-    // Vérifications basées sur le diabète et l'hypertension
     if (diabetes || hypertension) {
       criticalCondition = true;
       Alert.alert("Attention!", "Le patient a des antécédents de diabète ou d'hypertension.");
@@ -63,7 +54,6 @@ const PatientInfoScreen = () => {
     setIsCritical(criticalCondition);
   };
 
-  // Fonction pour gérer les situations d'urgence
   const handleEmergency = () => {
     Alert.alert("Urgence!", "Appeler les secours immédiatement !");
   };
@@ -72,33 +62,40 @@ const PatientInfoScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Informations sur le Patient</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Sexe"
-        value={sex}
-        onChangeText={setSex}
-      />
+      <View style={styles.pickerContainer}>
+         <Text style={styles.label}>Sexe :</Text>
+          <Picker selectedValue={sex} style={styles.picker} onValueChange={(itemValue) => setSex(itemValue)}>
+             <Picker.Item label="Homme" value="Homme" /> 
+             <Picker.Item label="Femme" value="Femme" />
+             <Picker.Item label="Autre" value="Autre" />
+           </Picker> 
+        </View> 
+      <Text style={styles.label}>Âge</Text>
       <TextInput
         style={styles.input}
         placeholder="Âge"
         value={age}
         onChangeText={setAge}
         keyboardType="numeric"
+        accessibilityLabel="Entrez l'âge du patient"
       />
+      <Text style={styles.label}>Niveau de Cholestérol</Text>
       <TextInput
         style={styles.input}
         placeholder="Niveau de Cholestérol"
         value={cholesterol}
         onChangeText={setCholesterol}
         keyboardType="numeric"
+        accessibilityLabel="Entrez le niveau de cholestérol du patient"
       />
+      <Text style={styles.label}>Méthode de Contribution</Text>
       <TextInput
         style={styles.input}
         placeholder="Méthode de Contribution"
         value={contribution}
         onChangeText={setContribution}
+        accessibilityLabel="Entrez la méthode de contribution"
       />
-
       <View style={styles.checkboxContainer}>
         <Text style={styles.checkboxLabel}>Diabète:</Text>
         <CheckBox
@@ -115,18 +112,19 @@ const PatientInfoScreen = () => {
         />
       </View>
 
-      {/* Bouton d'Analyse */}
       <Button title="Analyser" onPress={handleAnalysis} />
 
-      {/* Affichage des données de la montre si l'analyse a été effectuée */}
+      {/* Affichage des données de la montre sous forme de carte */}
       {watchData && (
-        <View style={styles.resultContainer}>
-          <Text>Fréquence cardiaque: {watchData.heartRate} bpm</Text>
-          <Text>Niveau d'oxygène: {watchData.oxygenLevel}%</Text>
+        <View style={styles.cardContainer}>
+          <Text style={styles.cardTitle}>Données de la Montre</Text>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardText}>Fréquence cardiaque: {watchData.heartRate} bpm</Text>
+            <Text style={styles.cardText}>Niveau d'oxygène: {watchData.oxygenLevel}%</Text>
+          </View>
         </View>
       )}
 
-      {/* Afficher le bouton d'Urgence si le patient est dans un état critique */}
       {isCritical && (
         <Button title="Urgence" color="red" onPress={handleEmergency} />
       )}
@@ -134,7 +132,6 @@ const PatientInfoScreen = () => {
   );
 };
 
-// Styles pour le composant
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -160,8 +157,28 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     marginLeft: 8,
   },
-  resultContainer: {
-    marginTop: 20,
+  cardContainer: {
+    backgroundColor: '#f8f8f8',
+    borderRadius: 10,
+    padding: 20,
+    marginVertical: 20,
+    elevation: 3, // pour ombre sur Android
+    shadowColor: '#000', // pour ombre sur iOS
+    shadowOffset: { width: 0, height: 1 }, // pour ombre sur iOS
+    shadowOpacity: 0.2, // pour ombre sur iOS
+    shadowRadius: 1, // pour ombre sur iOS
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  cardContent: {
+    alignItems: 'center',
+  },
+  cardText: {
+    fontSize: 16,
   },
 });
 
